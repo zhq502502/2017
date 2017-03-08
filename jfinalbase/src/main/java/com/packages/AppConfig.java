@@ -12,6 +12,8 @@ import com.jfinal.plugin.activerecord.CaseInsensitiveContainerFactory;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.render.ViewType;
 import com.packages.contoller.*;
+import com.packages.controller.IndexController;
+import com.packages.controller.UserController;
 import com.packages.handler.JspHandler;
 import com.packages.model.*;
 import com.packages.util.PropUtil;

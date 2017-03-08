@@ -1,4 +1,4 @@
-package com.packages.contoller;
+package com.packages.controller;
 
 import com.jfinal.core.Controller;
 import com.packages.core.ResultBean;
