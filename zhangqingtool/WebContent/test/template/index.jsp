@@ -7,6 +7,10 @@
 <title>java template</title>
 </head>
 <body>
-java模版
+<form action="temp/createtemp" method="post">
+<textarea rows="30" cols="120" name="temp"></textarea>
+<br/>
+<button type="submit">提交</button>
+</form>
 </body>
 </html>
