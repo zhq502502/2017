@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
+import com.packages.core.ResultBean;
+import com.packages.model.Test;
 import com.packages.util.FileUtil;
 
 import freemarker.cache.StringTemplateLoader;
@@ -36,8 +40,10 @@ public class TemplController extends Controller {
 		config.setTemplateLoader(stringTemp);
 		
 		//组装数据
-		Map<String,String> data = new HashMap<>();
+		Record a = Db.findFirst("select  count(*) as id,t.* from test t");
+		Map<String,Object> data = new HashMap<>();
 		data.put("username", "地址变更");
+		data.put("table", a.getColumnNames());
 		
 		//获取模版
 		Template template = config.getTemplate("testTemp");
@@ -47,9 +53,18 @@ public class TemplController extends Controller {
 		String result = writer.toString();
 		
 		
-		FileUtil.writeFile("d:/test.html", result);
+		//FileUtil.writeFile("d:/test.html", result);
 		//renderHtml(result);
-		//renderText(result);
-		renderFile(new File("d:/test.html"));
+		renderText(result);
+		//renderFile(new File("d:/test.html"));
+	}
+	
+	public void inittable(){
+		Record a = Db.findFirst("select * from test");
+		ResultBean result = new ResultBean();
+		
+		result.setData(a.getColumnNames());
+		renderJson(result);
+		
 	}
 }
