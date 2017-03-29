@@ -52,11 +52,12 @@ public class TemplController extends Controller {
 		template.process(data, writer);
 		String result = writer.toString();
 		
-		
+		setAttr("result", result);
 		//FileUtil.writeFile("d:/test.html", result);
 		//renderHtml(result);
-		renderText(result);
+		//renderText(result);
 		//renderFile(new File("d:/test.html"));
+		render("/test/template/index.jsp");
 	}
 	
 	public void inittable(){
