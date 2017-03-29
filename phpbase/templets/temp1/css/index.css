@@ -1,0 +1,43 @@
+*{
+	transition:all 0.7s;	
+}
+.section{
+	background-repeat: no-repeat;
+	background-size: 100%;
+	position: relative;
+}
+.page1{
+	background-color: #8080ff;
+}
+.page2{
+	background-color: #00ff40;
+}
+.page3{
+	background-color: #800000;
+}
+.page4{
+	background-color: #ff00ff;
+}
+.page3-1{
+	background-color: #333;
+}
+.page3-2{
+	background-color: #008000;
+}
+.page3-3{
+	background-color: #408080;
+}
+.page3-4{
+	background-color: #8080c0;
+}
+h3{
+	position: absolute;
+	color: #fff;
+	top:-50px;
+}
+.section.active h3{
+	top:50%;
+}
+.fp-controlArrow.fp-next{
+	right: 50px;
+}
