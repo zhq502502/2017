@@ -1,39 +1,52 @@
+body{
+	font-family: '微软雅黑';
+	padding: 0;
+	margin: 0;
+}
 *{
-	transition:all 0.7s;	
+	transition:all 1s;	
+}
+#dowebok{
+	transition-delay:0.3s!important;
+	transition-timing-function: ease-in-out!important;
+}
+.section.active{
+	
 }
 .section{
 	background-repeat: no-repeat;
-	background-size: 100%;
+	background-size: 100% 100%;
 	position: relative;
+	overflow: hidden!important;
 }
 .page1{
-	background-color: #8080ff;
+	background-image: url("../imgs/bg1.png");
 }
 .page2{
-	background-color: #00ff40;
+	background-image: url("../imgs/bg2.png");
 }
 .page3{
-	background-color: #800000;
+	background-image: url("../imgs/bg3.png");
 }
 .page4{
-	background-color: #ff00ff;
+	background-image: url("../imgs/bg4.png");
 }
-.page3-1{
-	background-color: #333;
+.page2-1{
+	/*background-color: #333;*/
 }
-.page3-2{
+.page2-2{
 	background-color: #008000;
 }
-.page3-3{
+.page2-3{
 	background-color: #408080;
 }
-.page3-4{
+.page2-4{
 	background-color: #8080c0;
 }
 h3{
 	position: absolute;
 	color: #fff;
-	top:-50px;
+	/*top:-50px;*/
 }
 .section.active h3{
 	top:50%;
@@ -41,3 +54,55 @@ h3{
 .fp-controlArrow.fp-next{
 	right: 50px;
 }
+.model{
+	position: absolute;
+	color: #fff;
+}
+/*第一屏*/
+.page1-title{
+	font-size: 40px;
+	font-weight: bold;
+	bottom: 550px;
+	left:0;
+	width: 600px;
+	text-align: center;
+	margin-left: -300px;
+	opacity: 0;
+	transition-delay:0s;
+	
+}
+.active .page1-title{
+	opacity: 1;
+	left: 50%;
+	transition-delay:1.0s;
+}
+.page1-title1{
+	font-size: 20px;
+	bottom: 520px;
+	right:0px;
+	width: 600px;
+	text-align: center;
+	margin-right: -300px;
+	opacity: 0;
+}
+.section.active .page1-title1{
+	right: 50%;
+	opacity: 1;
+	transition-delay:1.0s;
+}
+.page1-describer{
+	font-size: 12px;
+	bottom: 230px;
+	left: 50%;
+	width: 600px;
+	margin-left: -300px;
+	height: 200px;
+	text-indent: 25px;
+	opacity: 0;
+}
+.active .page1-describer{
+	bottom: 250px;
+	opacity: 1;
+	transition-delay:1.3s;
+}
+/*end第一屏*/
