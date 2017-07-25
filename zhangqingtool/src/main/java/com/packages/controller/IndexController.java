@@ -1,8 +1,20 @@
 package com.packages.controller;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.jfinal.core.Controller;
 import com.jfinal.log.Logger;
@@ -10,7 +22,9 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.packages.core.ResultBean;
 import com.packages.util.Error;
+import com.packages.util.PathUtil;
 import com.packages.util.PropUtil;
+import com.packages.util.StringUtil;
 import com.packages.util.TokenUtil;
 
 
@@ -22,130 +36,70 @@ public class IndexController extends Controller {
 		//this.testPro();
 		render("index.jsp");
     }
-	public void testPro(){
-		Object[] strArray={"7"};
-		/**增加记录*/
-		//System.err.println(Db.update(String.format(PropUtil.getInstance().getValue("sql.select.test1"), strArray)));//返回值为当前增加的记录数
-		/**更新一条语句*/
-		//System.err.println(Db.update(String.format(PropUtil.getInstance().getValue("sql.select.test2"), strArray)));//返回当前更新的记录数
-		/**查询list集合*/
-		//System.err.println(Db.find(String.format(PropUtil.getInstance().getValue("sql.select.test3"), strArray)));
-		/*List<Record> test=Db.find(String.format(PropUtil.getInstance().getValue("sql.select.test3"), strArray));
-		  for (Record record : test) {
-		   System.err.println(record.getInt("id"));
-		   System.err.println(record.getStr("name"));
-		   System.err.println(record.getInt("age"));
-		  }*/
-		/**查询一条记录*/
-		//System.err.println(Db.findFirst(String.format(PropUtil.getInstance().getValue("sql.select.test5"), strArray)));
-		/**删除一条记录*/
-		System.err.println(Db.update(String.format(PropUtil.getInstance().getValue("sql.select.test4"), strArray)));//返回的删除记录数
-	}
-	public void add(){
-		renderJson(getResultSimple());
-	}
-	public void update(){
-		renderJson(getResultSimple());
-	}
-	public void info(){
-		renderJson(getResultInfo());
-	}
-	public void delete(){
-		renderJson(getResultSimple());
-	}
-	public void list(){
-		renderJson(getResultList());
-	}
-	private ResultBean getResultSimple(){
-		ResultBean result = new ResultBean();
-		String m = getPara("m");
-		String p = getPara("p");
-		String t = getPara("t");
-		/*if(t!=null){
-			if(!TokenUtil.validateToken(t)){
-				result.setCode(Error.TOKEN_ERROR);
-				return result;
-			}
-		}*/
-		if(m==null){
-			result.setCode(Error.FAIL);
-			return result;
-		}else if(PropUtil.getInstance().getValue(m)==null){
-			result.setCode(Error.FAIL);
-			return result;
-		}
-		if(p==null){
-			int flag = Db.update(PropUtil.getInstance().getValue(m));
-			result.setCode(flag>0?Error.SUCCESS:Error.FAIL);
-		}else{
-			Object [] param = p.split("|");
-			int flag = Db.update(String.format(PropUtil.getInstance().getValue(m), param));
-			result.setCode(flag>0?Error.SUCCESS:Error.FAIL);
-		}
-		return result;
-	}
-	private ResultBean getResultInfo(){
-		ResultBean result = new ResultBean();
-		String m = getPara("m");
-		String p = getPara("p");
-		String t = getPara("t");
-		if(t!=null){
-			if(!TokenUtil.validateToken(t)){
-				result.setCode(Error.TOKEN_ERROR);
-				return result;
-			}
-		}
-		if(m==null){
-			result.setCode(Error.FAIL);
-			return result;
-		}else if(PropUtil.getInstance().getValue(m)==null){
-			result.setCode(Error.FAIL);
-			return result;
-		}
-		if(p==null){
-			Record flag = Db.findFirst(PropUtil.getInstance().getValue(m));
-			result.setCode(Error.SUCCESS);
-			result.setData(flag);
-		}else{
-			Object [] param = p.split("|");
-			Record flag = Db.findFirst(String.format(PropUtil.getInstance().getValue(m), param));
-			result.setCode(Error.SUCCESS);
-			result.setData(flag);
-		}
-		return result;
-	}
-	private ResultBean getResultList(){
-		ResultBean result = new ResultBean();
-		String m = getPara("m");
-		String p = getPara("p");
-		String t = getPara("t");
-		if(t!=null){
-			if(!TokenUtil.validateToken(t)){
-				result.setCode(Error.TOKEN_ERROR);
-				return result;
-			}
-		}
-		if(m==null){
-			result.setCode(Error.FAIL);
-			return result;
-		}else if(PropUtil.getInstance().getValue(m)==null){
-			result.setCode(Error.FAIL);
-			return result;
-		}
-		if(p==null){
-			List<Record> flag = Db.find(PropUtil.getInstance().getValue(m));
-			result.setCode(Error.SUCCESS);
-			result.setData(flag);
-		}else{
-			Object [] param = p.split("|");
-			List<Record> flag = Db.find(String.format(PropUtil.getInstance().getValue(m), param));
-			result.setCode(Error.SUCCESS);
-			result.setData(flag);
-		}
-		return result;
-	}
 	public void init(){
 		PropUtil.getInstance().initProp();
 		renderText("初始化配置完成");
+	}
+	public void fileupload(){//文件上传
+		HttpServletRequest request = this.getRequest();
+		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		if (!isMultipart) {
+			// return mv;
+		}
+		// Create a factory for disk-based file items
+		FileItemFactory factory = new DiskFileItemFactory();
+
+		// Create a new file upload handler
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		//setSessionAttr("proInfo", new ProcessInfo());
+		upload.setProgressListener(new ProgressListener() {
+			public void update(long pBytesRead, long pContentLength, int pItems) {
+				/*ProcessInfo pri = new ProcessInfo();
+				pri.itemNum = pItems;
+				pri.readSize = pBytesRead;
+				pri.totalSize = pContentLength;
+				pri.show = pBytesRead + "/" + pContentLength + " byte";
+				pri.rate = Math.round(new Float(pBytesRead) / new Float(pContentLength) * 100);
+				setSessionAttr("proInfo", pri);*/
+			}
+		});
+		ResultBean result = new ResultBean();
+		//ProcessInfo process = new ProcessInfo();
+		try {
+			List items = upload.parseRequest(request);
+			Iterator iter = items.iterator();
+			while (iter.hasNext()) {
+				FileItem item = (FileItem) iter.next();
+				if (item.isFormField()) {
+					String name = item.getFieldName();
+					String value = item.getString();
+				} else {
+					String fieldName = item.getFieldName();
+					String fileName = item.getName();
+					String extension = fileName.substring(fileName.lastIndexOf("."));
+					String contentType = item.getContentType();
+					boolean isInMemory = item.isInMemory();
+					long sizeInBytes = item.getSize();
+					String filename = StringUtil.getRandomFilename()  + extension;
+					File uploadedFile = new File(PathUtil.getProjectPath()+"/u/" +filename);
+					String path = this.getRequest().getContextPath();
+					String basePath = this.getRequest().getScheme()+"://"+this.getRequest().getServerName()+":"+this.getRequest().getServerPort()+path+"/";
+					String url = basePath+"/u/";
+					Map<String,String> data = new HashMap<String, String>();
+					data.put("url", url+filename);
+					data.put("filename",fileName);
+					data.put("hzm",contentType.split("/")[0]);
+					result.setCode(0);
+					result.setData(data);
+					item.write(uploadedFile);
+				}
+			}
+			
+		} catch (FileUploadException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.renderJson(result);
 	}
 }

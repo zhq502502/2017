@@ -1,5 +1,7 @@
 package com.packages.util;
 
+import java.util.Calendar;
+
 public class StringUtil {
 	
    public static String removeLast(String str){
@@ -20,4 +22,13 @@ public class StringUtil {
 	   }
 	   return url;
    }
+   /**
+	 * 获得一个随机的文件名
+	 * @return
+	 */
+	public static String getRandomFilename(){
+		String filename = Calendar.getInstance().getTimeInMillis()+"" ;
+		String random = ((int)(Math.random()*100000))+"";
+		return filename+random;
+	}
 }

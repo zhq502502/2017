@@ -8,5 +8,6 @@
 </head>
 <body>
 	<a href="temp">java模版</a>
+	<a href="test/upload/fileupload.jsp">文件上传</a>
 </body>
 </html>
