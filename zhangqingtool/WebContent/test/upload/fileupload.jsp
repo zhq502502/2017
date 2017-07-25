@@ -30,6 +30,11 @@ session.setAttribute("basePath",basePath);
 	<input type="file" id="file" />
 </div>
 <script type="text/javascript">
+/**
+ * 参考api可自定义显示模版
+ * http://www.uploadify.com/documentation/
+ * http://www.cnblogs.com/lvdabao/p/3452858.html
+ */
 $(function() {
     $('#file').uploadifive({
         'auto' : true,
@@ -41,7 +46,9 @@ $(function() {
         'multi' : true,
         'fileSizeLimit'   : 5242880,
         'uploadLimit' : 4,
-        'queueSizeLimit'  : 4,   
+        'queueSizeLimit'  : 4, 
+        'showUploadedPercent':true,
+        'showUploadedSize':true,
         'onUploadComplete' : function(file, data) {
             console.log("onUploadComplete"+file);
             console.log("onUploadComplete"+data);
